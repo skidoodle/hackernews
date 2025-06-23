@@ -29,7 +29,7 @@ func (a *App) Routes() *http.ServeMux {
 	mux.HandleFunc("GET /new", a.storiesHandler("new"))
 	mux.HandleFunc("GET /ask", a.storiesHandler("ask"))
 	mux.HandleFunc("GET /show", a.storiesHandler("show"))
-	mux.HandleFunc("GET /jobs", a.storiesHandler("job"))
+	mux.HandleFunc("GET /job", a.storiesHandler("job"))
 	mux.HandleFunc("GET /item", a.itemHandler)
 	mux.HandleFunc("GET /user", a.userHandler)
 	mux.HandleFunc("GET /", a.catchAllHandler)
