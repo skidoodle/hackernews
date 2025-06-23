@@ -1,0 +1,48 @@
+{{template "base" .}}
+
+{{define "title"}}{{.Item.Title}}{{end}}
+
+{{define "body"}}
+<div class="item-view">
+    <article class="story-details">
+        <div class="title">
+            <a href="{{.Item.URL}}" class="storylink">{{.Item.Title}}</a>
+            {{if .Item.URL}}<span class="sitebit">(<a href="#">{{host .Item.URL}}</a>)</span>{{end}}
+        </div>
+        <div class="subtext">
+            <span>{{.Item.Score}} points by {{.Item.By}}</span>
+            <span><a href="/item?id={{.Item.ID}}">{{timeAgo .Item.Time}}</a></span>
+        </div>
+        {{if .Item.Text}}
+        <div class="item-text">
+            {{safeHTML .Item.Text}}
+        </div>
+        {{end}}
+    </article>
+
+    <section class="comment-tree">
+        {{template "comment" .Item}}
+    </section>
+</div>
+{{end}}
+
+{{define "comment"}}
+    {{range .Comments}}
+        {{if not .Deleted}}
+        <article class="comment">
+            <div class="comhead">
+                <a href="#">{{.By}}</a>
+                <span>{{timeAgo .Time}}</span>
+            </div>
+            <div class="text">
+                {{safeHTML .Text}}
+            </div>
+            {{if .Comments}}
+            <div class="child-comments">
+                {{template "comment" .}}
+            </div>
+            {{end}}
+        </article>
+        {{end}}
+    {{end}}
+{{end}}

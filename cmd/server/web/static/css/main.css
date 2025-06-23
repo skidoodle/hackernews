@@ -1,0 +1,221 @@
+:root {
+    --bg-color: #1a1a1b;
+    --text-color: #d7dadc;
+    --link-color: #d7dadc;
+    --link-hover-color: #ff6600;
+    --border-color: #343536;
+    --header-bg: #ff6600;
+    --header-text: #000000;
+    --subtext-color: #818384;
+    --rank-color: #818384;
+    --item-bg: #1a1a1b;
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --bg-color: #f6f6ef;
+        --text-color: #333;
+        --link-color: #000000;
+        --link-hover-color: #ff6600;
+        --border-color: #e0e0e0;
+        --header-bg: #ff6600;
+        --header-text: #000000;
+        --subtext-color: #828282;
+        --rank-color: #828282;
+        --item-bg: #f6f6ef;
+    }
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 8px;
+    font-size: 16px;
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--link-hover-color);
+    text-decoration: underline;
+}
+
+#hnmain {
+    width: 95%;
+    max-width: 1200px;
+    margin: auto;
+    background-color: var(--item-bg);
+}
+
+/* Header */
+.header {
+    background-color: var(--header-bg);
+    padding: 4px;
+    display: flex;
+    align-items: center;
+}
+
+.header .logo-link {
+    margin-right: 5px;
+}
+
+.header .logo {
+    border: 1px solid white;
+    display: block;
+}
+
+.pagetop {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+}
+
+.pagetop-left {
+    display: flex;
+    align-items: center;
+    gap: 4px 8px;
+}
+
+.pagetop-right {
+    margin-left: auto;
+}
+
+.pagetop a {
+    color: var(--header-text);
+    transition: color 0.2s ease-in-out;
+}
+
+.pagetop a.active {
+    color: #ffffff;
+}
+
+.header .hnname a {
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: var(--header-text);
+}
+
+/* Main Content */
+.content-container {
+    padding: 10px;
+}
+
+/* Story List Item */
+.story-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 5px;
+}
+
+.story-item .rank {
+    color: var(--rank-color);
+    font-size: 1.1rem;
+    width: 30px;
+    text-align: right;
+    margin-right: 8px;
+    padding-top: 2px;
+}
+
+.story-item .title {
+    font-size: 1.1rem;
+}
+
+.story-item .sitebit {
+    font-size: 0.9rem;
+    color: var(--subtext-color);
+    margin-left: 4px;
+}
+
+.story-item .sitebit a {
+    color: var(--subtext-color);
+}
+
+.story-item .subtext {
+    font-size: 0.9rem;
+    color: var(--subtext-color);
+    margin-top: 4px;
+}
+
+.story-item .subtext a {
+    color: var(--subtext-color);
+}
+.story-item .subtext a:hover {
+    text-decoration: underline;
+}
+
+.more-link {
+    display: block;
+    padding: 10px 0 10px 38px;
+    font-size: 1.1rem;
+}
+
+/* Item Page View */
+.item-view {
+    padding: 10px;
+}
+
+.item-view .title {
+    font-size: 1.1rem;
+}
+
+.item-view .sitebit {
+    font-size: 0.9rem;
+    color: var(--subtext-color);
+    margin-left: 4px;
+}
+
+.item-view .subtext {
+    font-size: 0.9rem;
+    color: var(--subtext-color);
+    margin-top: 4px;
+}
+
+.item-view .item-text {
+    margin-top: 15px;
+    line-height: 1.4;
+    overflow-wrap: break-word;
+}
+
+/* Comment Tree */
+.comment-tree {
+    margin-top: 20px;
+}
+
+.comment {
+    margin-top: 15px;
+}
+
+.comment .comhead {
+    color: var(--subtext-color);
+    font-size: 0.9rem;
+}
+.comment .comhead a {
+    color: var(--subtext-color);
+    font-weight: bold;
+}
+.comment .comhead a:hover {
+    text-decoration: underline;
+}
+
+.comment .text {
+    margin-top: 5px;
+    line-height: 1.4;
+    overflow-wrap: break-word;
+}
+
+.comment .text p {
+    margin-top: 0;
+}
+
+.comment .child-comments {
+    border-left: 2px solid var(--border-color);
+    padding-left: 15px;
+    margin-top: 15px;
+}

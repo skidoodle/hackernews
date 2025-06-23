@@ -1,0 +1,29 @@
+{{template "base" .}}
+
+{{define "title"}}Hacker News | {{.ActiveNav}}{{end}}
+
+{{define "body"}}
+<div class="story-list">
+    {{range $idx, $story := .Stories}}
+        {{if $story}}
+        <article class="story-item">
+            <div class="rank">{{rank $idx $.CurrentPage $.ItemsPerPage}}.</div>
+            <div class="story-details">
+                <div class="title">
+                    <a href="{{$story.URL}}" class="storylink">{{$story.Title}}</a>
+                    {{if $story.URL}}
+                    <span class="sitebit">(<a href="#">{{host $story.URL}}</a>)</span>
+                    {{end}}
+                </div>
+                <div class="subtext">
+                    <span>{{$story.Score}} points by {{$story.By}}</span>
+                    <span><a href="/item?id={{$story.ID}}">{{timeAgo $story.Time}}</a></span> |
+                    <span><a href="/item?id={{$story.ID}}">{{$story.Descendants}} comments</a></span>
+                </div>
+            </div>
+        </article>
+        {{end}}
+    {{end}}
+</div>
+<a class="more-link" href="/{{if .ActiveNav}}{{.ActiveNav}}{{end}}?page={{.NextPage}}">More</a>
+{{end}}
