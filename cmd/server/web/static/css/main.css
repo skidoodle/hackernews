@@ -52,7 +52,6 @@ a:hover {
     background-color: var(--item-bg);
 }
 
-/* Header */
 .header {
     background-color: var(--header-bg);
     padding: 4px;
@@ -102,12 +101,10 @@ a:hover {
     color: var(--header-text);
 }
 
-/* Main Content */
 .content-container {
     padding: 10px;
 }
 
-/* Story List Item */
 .story-item {
     display: flex;
     align-items: flex-start;
@@ -146,6 +143,7 @@ a:hover {
 .story-item .subtext a {
     color: var(--subtext-color);
 }
+
 .story-item .subtext a:hover {
     text-decoration: underline;
 }
@@ -156,7 +154,6 @@ a:hover {
     font-size: 1.1rem;
 }
 
-/* Item Page View */
 .item-view {
     padding: 10px;
 }
@@ -177,13 +174,19 @@ a:hover {
     margin-top: 4px;
 }
 
-.item-view .item-text {
-    margin-top: 15px;
+.item-view .item-text,
+.comment .text,
+.submission-comment-text {
     line-height: 1.4;
     overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
 }
 
-/* Comment Tree */
+.item-view .item-text {
+    margin-top: 15px;
+}
+
 .comment-tree {
     margin-top: 20px;
 }
@@ -196,18 +199,29 @@ a:hover {
     color: var(--subtext-color);
     font-size: 0.9rem;
 }
+
 .comment .comhead a {
     color: var(--subtext-color);
     font-weight: bold;
 }
+
 .comment .comhead a:hover {
     text-decoration: underline;
 }
 
 .comment .text {
     margin-top: 5px;
-    line-height: 1.4;
-    overflow-wrap: break-word;
+}
+
+.item-view .item-text pre,
+.comment .text pre,
+.submission-comment-text pre {
+    white-space: pre-wrap;
+    word-break: break-all;
+    font-family: monospace;
+    background-color: var(--border-color);
+    padding: 10px;
+    border-radius: 4px;
 }
 
 .comment .text p {
@@ -218,4 +232,53 @@ a:hover {
     border-left: 2px solid var(--border-color);
     padding-left: 15px;
     margin-top: 15px;
+}
+
+.user-profile .user-details {
+    font-size: 1.1rem;
+}
+
+.user-profile .user-details table td {
+    padding: 2px 5px;
+}
+
+.user-profile .user-details .about-text p {
+    margin-top: 0;
+}
+
+.user-profile .user-nav {
+    margin-top: 15px;
+    font-size: 1.1rem;
+}
+
+.user-profile .user-nav a.active {
+    color: var(--link-hover-color);
+    font-weight: bold;
+}
+
+.user-profile .user-content {
+    margin-top: 20px;
+}
+
+.submission-comment {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.submission-comment .subtext {
+    font-size: 0.9rem;
+    color: var(--subtext-color);
+}
+
+.submission-comment-text {
+    margin-top: 8px;
+}
+
+.submission-comment-text p {
+    margin: 0 0 10px 0;
+}
+
+.submission-comment-text p:last-child {
+    margin-bottom: 0;
 }

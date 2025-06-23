@@ -1,6 +1,7 @@
 {{define "base"}}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>{{template "title" .}}</title>
     <meta charset="UTF-8">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="/static/css/main.css" type="text/css">
     <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon">
 </head>
+
 <body>
     <div id="hnmain">
         <header class="header">
@@ -17,13 +19,14 @@
             <nav class="pagetop">
                 <div class="pagetop-left">
                     <b class="hnname"><a href="/">Hacker News</a></b>
-                    <a href="/new" {{if eq .ActiveNav "new"}}class="active"{{end}}>new</a> |
-                    <a href="/ask" {{if eq .ActiveNav "ask"}}class="active"{{end}}>ask</a> |
-                    <a href="/show" {{if eq .ActiveNav "show"}}class="active"{{end}}>show</a> |
-                    <a href="/job" {{if eq .ActiveNav "job"}}class="active"{{end}}>job</a>
+                    <a href="/new" {{if eq .ActiveNav "new" }}class="active" {{end}}>new</a> |
+                    <a href="/ask" {{if eq .ActiveNav "ask" }}class="active" {{end}}>ask</a> |
+                    <a href="/show" {{if eq .ActiveNav "show" }}class="active" {{end}}>show</a> |
+                    <a href="/job" {{if eq .ActiveNav "job" }}class="active" {{end}}>job</a>
                 </div>
                 <div class="pagetop-right">
-                    <a href="https://github.com/skidoodle/hackernews" target="_blank" rel="noopener noreferrer">source</a>
+                    <a href="https://github.com/skidoodle/hackernews" target="_blank"
+                        rel="noopener noreferrer">source</a>
                 </div>
             </nav>
         </header>
@@ -32,5 +35,6 @@
         </main>
     </div>
 </body>
+
 </html>
 {{end}}

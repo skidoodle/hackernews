@@ -15,19 +15,70 @@ import (
 type Client struct {
 	httpClient  *http.Client
 	itemCache   *cache.Cache[*Item]
+	userCache   *cache.Cache[*User]
 	idListCache *cache.Cache[[]int]
 	logger      *slog.Logger
 	cfg         *config.HackerNewsAPIConfig
 }
 
-func NewClient(logger *slog.Logger, cfg *config.Config) *Client {
-	return &Client{
-		httpClient:  &http.Client{},
-		itemCache:   cache.New[*Item](cfg.Cache.ItemTTL * 2),
-		idListCache: cache.New[[]int](cfg.Cache.ItemTTL),
-		logger:      logger,
-		cfg:         &cfg.HackerNewsAPI,
+func (c *Client) GetUser(ctx context.Context, id string) (*User, error) {
+	cacheKey := fmt.Sprintf("user:%s", id)
+	if cached, found := c.userCache.Get(cacheKey); found {
+		return cached, nil
 	}
+
+	url := fmt.Sprintf("%s/user/%s.json", c.cfg.BaseURL, id)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request for user %s: %w", id, err)
+	}
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch user %s: %w", id, err)
+	}
+	defer resp.Body.Close()
+
+	var user User
+	if err := json.NewDecoder(resp.Body).Decode(&user); err != nil {
+		return nil, fmt.Errorf("failed to decode user %s: %w", id, err)
+	}
+
+	c.userCache.Set(cacheKey, &user)
+	return &user, nil
+}
+
+func (c *Client) GetItemsByIDs(ctx context.Context, ids []int) ([]*Item, error) {
+	items := make([]*Item, len(ids))
+	jobs := make(chan int, len(ids))
+	results := make(chan *Item, len(ids))
+
+	var wg sync.WaitGroup
+	for i := 0; i < c.cfg.WorkerCount; i++ {
+		wg.Add(1)
+		go c.storyWorker(ctx, &wg, jobs, results)
+	}
+
+	for _, id := range ids {
+		jobs <- id
+	}
+	close(jobs)
+
+	wg.Wait()
+	close(results)
+
+	idToItemMap := make(map[int]*Item, len(ids))
+	for item := range results {
+		if item != nil {
+			idToItemMap[item.ID] = item
+		}
+	}
+
+	for i, id := range ids {
+		items[i] = idToItemMap[id]
+	}
+
+	return items, nil
 }
 
 func (c *Client) GetStoriesForPage(ctx context.Context, storyType string, page int) ([]*Item, error) {
@@ -39,44 +90,25 @@ func (c *Client) GetStoriesForPage(ctx context.Context, storyType string, page i
 	start := (page - 1) * c.cfg.ItemsPerPage
 	end := start + c.cfg.ItemsPerPage
 
-	if start > len(allStoryIDs) {
+	if start >= len(allStoryIDs) {
 		return []*Item{}, nil
 	}
 	if end > len(allStoryIDs) {
 		end = len(allStoryIDs)
 	}
 
-	pageIDs := allStoryIDs[start:end]
-	stories := make([]*Item, len(pageIDs))
-	jobs := make(chan int, len(pageIDs))
-	results := make(chan *Item, len(pageIDs))
+	return c.GetItemsByIDs(ctx, allStoryIDs[start:end])
+}
 
-	var wg sync.WaitGroup
-	for i := 0; i < c.cfg.WorkerCount; i++ {
-		wg.Add(1)
-		go c.storyWorker(ctx, &wg, jobs, results)
+func NewClient(logger *slog.Logger, cfg *config.Config) *Client {
+	return &Client{
+		httpClient:  &http.Client{},
+		itemCache:   cache.New[*Item](cfg.Cache.ItemTTL * 2),
+		userCache:   cache.New[*User](cfg.Cache.ItemTTL * 2),
+		idListCache: cache.New[[]int](cfg.Cache.ItemTTL),
+		logger:      logger,
+		cfg:         &cfg.HackerNewsAPI,
 	}
-
-	for _, id := range pageIDs {
-		jobs <- id
-	}
-	close(jobs)
-
-	wg.Wait()
-	close(results)
-
-	idToItemMap := make(map[int]*Item, len(pageIDs))
-	for item := range results {
-		if item != nil {
-			idToItemMap[item.ID] = item
-		}
-	}
-
-	for i, id := range pageIDs {
-		stories[i] = idToItemMap[id]
-	}
-
-	return stories, nil
 }
 
 func (c *Client) GetItem(ctx context.Context, id int) (*Item, error) {

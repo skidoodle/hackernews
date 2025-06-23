@@ -3,21 +3,31 @@ package view
 import (
 	"bytes"
 	"fmt"
+
 	"html/template"
 	"io/fs"
 	"net/http"
 	"path/filepath"
+	"time"
 
 	"hackernews/internal/hn"
 )
 
 type TemplateData struct {
-	Stories      []*hn.Item
-	Item         *hn.Item
-	ActiveNav    string
-	CurrentPage  int
-	NextPage     int
-	ItemsPerPage int
+	Stories        []*hn.Item
+	Item           *hn.Item
+	User           *hn.User
+	Submissions    []*hn.Item
+	Comments       []*hn.Item
+	ActiveNav      string
+	ActiveUserView string
+	CurrentPage    int
+	NextPage       int
+	ItemsPerPage   int
+}
+
+func formatDate(t int64) string {
+	return time.Unix(t, 0).Format("January 2, 2006")
 }
 
 var functions = template.FuncMap{
@@ -38,6 +48,8 @@ var functions = template.FuncMap{
 	"rank": func(idx, page, itemsPerPage int) int {
 		return idx + ((page - 1) * itemsPerPage) + 1
 	},
+	"formatText": FormatText,
+	"formatDate": formatDate,
 }
 
 func NewTemplateCache(dir fs.FS) (map[string]*template.Template, error) {

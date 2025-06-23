@@ -38,23 +38,45 @@ func (item *Item) Host() string {
 func (item *Item) TimeAgo() string {
 	duration := time.Since(time.Unix(item.Time, 0))
 
-	if duration.Hours() >= 24*2 {
-		return fmt.Sprintf("%d days ago", int(duration.Hours()/24))
+	years := int(duration.Hours() / (24 * 365))
+	if years > 1 {
+		return fmt.Sprintf("%d years ago", years)
 	}
-	if duration.Hours() >= 24 {
+	if years == 1 {
+		return "1 year ago"
+	}
+
+	months := int(duration.Hours() / (24 * 30))
+	if months > 1 {
+		return fmt.Sprintf("%d months ago", months)
+	}
+	if months == 1 {
+		return "1 month ago"
+	}
+
+	days := int(duration.Hours() / 24)
+	if days > 1 {
+		return fmt.Sprintf("%d days ago", days)
+	}
+	if days == 1 {
 		return "1 day ago"
 	}
-	if duration.Hours() >= 2 {
-		return fmt.Sprintf("%d hours ago", int(duration.Hours()))
+
+	hours := int(duration.Hours())
+	if hours > 1 {
+		return fmt.Sprintf("%d hours ago", hours)
 	}
-	if duration.Hours() >= 1 {
+	if hours == 1 {
 		return "1 hour ago"
 	}
-	if duration.Minutes() >= 2 {
-		return fmt.Sprintf("%d minutes ago", int(duration.Minutes()))
+
+	minutes := int(duration.Minutes())
+	if minutes > 1 {
+		return fmt.Sprintf("%d minutes ago", minutes)
 	}
-	if duration.Minutes() >= 1 {
+	if minutes == 1 {
 		return "1 minute ago"
 	}
+
 	return "just now"
 }

@@ -1,0 +1,89 @@
+{{template "base" .}}
+
+{{define "title"}}Hacker News | {{.User.ID}}{{end}}
+
+{{define "body"}}
+<div class="user-profile">
+    <section class="user-details">
+        <table>
+            <tbody>
+                <tr>
+                    <td valign="top">user:</td>
+                    <td>{{.User.ID}}</td>
+                </tr>
+                <tr>
+                    <td valign="top">created:</td>
+                    <td>{{formatDate .User.Created}}</td>
+                </tr>
+                <tr>
+                    <td valign="top">karma:</td>
+                    <td>{{.User.Karma}}</td>
+                </tr>
+                {{if .User.About}}
+                <tr>
+                    <td valign="top">about:</td>
+                    <td class="about-text">{{formatText .User.About}}</td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+        <nav class="user-nav">
+            <a href="/user?id={{.User.ID}}&view=submissions" {{if eq .ActiveUserView "submissions" }}class="active"
+                {{end}}>submissions</a> |
+            <a href="/user?id={{.User.ID}}&view=comments" {{if eq .ActiveUserView "comments" }}class="active"
+                {{end}}>comments</a>
+        </nav>
+    </section>
+
+    <section class="user-content">
+        {{if eq .ActiveUserView "submissions"}}
+        <div class="story-list">
+            {{range .Submissions}}
+            <article class="story-item">
+                <div class="rank"></div>
+                <div class="story-details">
+                    <div class="title">
+                        {{if .URL}}
+                        <a href="{{.URL}}" class="storylink">{{.Title}}</a>
+                        <span class="sitebit">(<a href="#">{{host .URL}}</a>)</span>
+                        {{else}}
+                        <a href="/item?id={{.ID}}">{{.Title}}</a>
+                        {{end}}
+                    </div>
+                    <div class="subtext">
+                        <span>{{.Score}} points</span>
+                        <span>by <a href="/user?id={{.By}}">{{.By}}</a></span>
+                        <span><a href="/item?id={{.ID}}">{{timeAgo .Time}}</a></span> |
+                        <span><a href="/item?id={{.ID}}">{{.Descendants}} comments</a></span>
+                    </div>
+                </div>
+            </article>
+            {{else}}
+            <p>This user has no submissions.</p>
+            {{end}}
+        </div>
+        {{if eq (len .Submissions) .ItemsPerPage}}
+        <a class="more-link" href="/user?id={{.User.ID}}&view=submissions&page={{.NextPage}}">More</a>
+        {{end}}
+        {{else if eq .ActiveUserView "comments"}}
+        <div class="comment-list">
+            {{range .Comments}}
+            <div class="submission-comment">
+                <div class="subtext">
+                    <span>by <a href="/user?id={{.By}}">{{.By}}</a></span>
+                    <span><a href="/item?id={{.ID}}">{{timeAgo .Time}}</a></span> |
+                    <span>on <a href="/item?id={{.Parent}}">parent</a></span>
+                </div>
+                <div class="submission-comment-text">{{formatText .Text}}</div>
+            </div>
+            {{else}}
+            <p>This user has no comments.</p>
+            {{end}}
+        </div>
+        {{if eq (len .Comments) .ItemsPerPage}}
+        <a class="more-link" href="/user?id={{.User.ID}}&view=comments&page={{.NextPage}}">More</a>
+        {{end}}
+        {{end}}
+    </section>
+</div>
+{{end}}

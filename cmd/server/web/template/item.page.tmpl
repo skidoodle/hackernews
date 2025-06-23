@@ -10,7 +10,7 @@
             {{if .Item.URL}}<span class="sitebit">(<a href="#">{{host .Item.URL}}</a>)</span>{{end}}
         </div>
         <div class="subtext">
-            <span>{{.Item.Score}} points by {{.Item.By}}</span>
+            <span>{{.Item.Score}} points by <a href="/user?id={{.Item.By}}">{{.Item.By}}</a></span>
             <span><a href="/item?id={{.Item.ID}}">{{timeAgo .Item.Time}}</a></span>
         </div>
         {{if .Item.Text}}
@@ -27,22 +27,22 @@
 {{end}}
 
 {{define "comment"}}
-    {{range .Comments}}
-        {{if not .Deleted}}
-        <article class="comment">
-            <div class="comhead">
-                <a href="#">{{.By}}</a>
-                <span>{{timeAgo .Time}}</span>
-            </div>
-            <div class="text">
-                {{safeHTML .Text}}
-            </div>
-            {{if .Comments}}
-            <div class="child-comments">
-                {{template "comment" .}}
-            </div>
-            {{end}}
-        </article>
-        {{end}}
+{{range .Comments}}
+{{if not .Deleted}}
+<article class="comment">
+    <div class="comhead">
+        <a href="/user?id={{.By}}">{{.By}}</a>
+        <span>{{timeAgo .Time}}</span>
+    </div>
+    <div class="text">
+        {{formatText .Text}}
+    </div>
+    {{if .Comments}}
+    <div class="child-comments">
+        {{template "comment" .}}
+    </div>
     {{end}}
+</article>
+{{end}}
+{{end}}
 {{end}}
